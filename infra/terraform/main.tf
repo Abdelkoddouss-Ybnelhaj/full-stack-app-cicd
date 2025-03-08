@@ -1,6 +1,6 @@
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "my-vm-instance"
+  name         = "my-instance"
   machine_type = "e2-small"
   zone         = "${var.gcp_region}-a"
   
