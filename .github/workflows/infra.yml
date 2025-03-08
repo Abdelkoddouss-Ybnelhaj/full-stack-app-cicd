@@ -1,0 +1,38 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: 
+    - "infra/*"
+    - "ansible/*"
+  pull_request:
+    
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud service account key
+        run: |
+          echo "${{ secrets.GCP_SVC_KEY }}" > $HOME/gcp_svc_key.json
+        env:
+          GCP_SVC_KEY: ${{ secrets.GCP_SVC_KEY }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Plan Terraform Deployment
+        run: terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key_path=$HOME/gcp_svc_key.json"
+
+      - name: Apply Terraform Deployment
+        run: terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key_path=$HOME/gcp_svc_key.json"
