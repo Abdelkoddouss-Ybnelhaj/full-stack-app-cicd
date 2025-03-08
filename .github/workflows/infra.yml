@@ -23,6 +23,9 @@ jobs:
         env:
           GCP_SVC_KEY: ${{ secrets.GCP_SVC_KEY }}
 
+      - name: Validate Google Cloud service account key
+        run: cat $HOME/gcp_svc_key.json
+          
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
