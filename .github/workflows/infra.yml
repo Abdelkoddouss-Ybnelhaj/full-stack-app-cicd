@@ -4,8 +4,7 @@ on:
   push:
     branches: [ "master" ]
     paths: 
-    - "infra/*"
-    - "ansible/*"
+    - "infra/**"
   pull_request:
     
 permissions:
