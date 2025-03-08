@@ -1,0 +1,30 @@
+name: e-wallet
+services:
+
+  db:
+    container_name: e-wallet-db
+    image: postgres:14.6-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${db_name}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ewallet_postgres_data:/var/lib/postgresql/data
+    networks:
+      - ewallet_network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '100m'
+        max-file: '5'
+
+volumes:
+  ewallet_postgres_data:
+    driver: local
+
+networks:
+  ewallet_network:
+    driver: bridge
