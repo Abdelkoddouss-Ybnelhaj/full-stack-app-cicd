@@ -39,10 +39,14 @@ jobs:
         run: terraform -chdir=infra/terraform fmt -check
 
       - name: Plan Terraform Deployment
-        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir=infra/terraform plan \
+              -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" \
+              -var="gcp_svc_key=$(cat $HOME/gcp_key.json)"
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir=infra/terraform apply -auto-approve \
+              -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" \
+              -var="gcp_svc_key=$(cat $HOME/gcp_key.json)"
 
       - name: Cleanup Google Cloud credentials
         if: always()
