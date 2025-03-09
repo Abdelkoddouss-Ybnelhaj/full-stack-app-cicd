@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
 
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
@@ -28,10 +28,13 @@ jobs:
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
 
+      - name: Format Terraform files (Auto-fix)
+        run: terraform -chdir=infra/terraform fmt
+
       - name: Validate Terraform configuration
         run: terraform -chdir=infra/terraform validate
 
-      - name: Format Terraform files
+      - name: Check Terraform formatting (After Auto-fix)
         run: terraform -chdir=infra/terraform fmt -check
 
       - name: Plan Terraform Deployment
