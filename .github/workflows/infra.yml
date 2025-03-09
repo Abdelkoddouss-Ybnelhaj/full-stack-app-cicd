@@ -4,8 +4,8 @@ on:
   pull_request:
     branches: [ "master" ]
     paths: 
-    - "infra/**"
-    
+      - "infra/**"
+
 permissions:
   contents: read
 
@@ -16,21 +16,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-          
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Initialize Terraform
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
-          cd infra/terraform
-          terraform init
+          echo "${{ secrets.GCP_SVC_KEY }}" | base64 --decode > $HOME/gcp_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_key.json" >> $GITHUB_ENV
+
+      - name: Validate Terraform configuration
+        run: terraform -chdir=infra/terraform validate
+
+      - name: Format Terraform files
+        run: terraform -chdir=infra/terraform fmt -check
+
+      - name: Initialize Terraform
+        run: terraform -chdir=infra/terraform init
 
       - name: Plan Terraform Deployment
-        run: |
-          cd infra/terraform
-          terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
+        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
 
       - name: Apply Terraform Deployment
-        run: |
-          cd infra/terraform
-          terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
+        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+
+      - name: Cleanup Google Cloud credentials
+        if: always()
+        run: rm -f $HOME/gcp_key.json
