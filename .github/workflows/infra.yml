@@ -22,10 +22,9 @@ jobs:
 
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
-          echo "${{ secrets.GCP_SVC_KEY }}" | base64 --decode > $HOME/gcp_key.json
+          echo '${{ secrets.GCP_SVC_KEY }}' > $HOME/gcp_key.json
           chmod 600 $HOME/gcp_key.json  # Ensure proper permissions
           echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_key.json" >> $GITHUB_ENV
-
 
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
