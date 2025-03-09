@@ -22,8 +22,8 @@ jobs:
 
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
-          echo "${{ secrets.GCP_SVC_KEY }}" | base64 --decode > $HOME/gcp_key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_key.json" >> $GITHUB_ENV
+          echo "${{ secrets.GCP_SVC_KEY }}" > gcp_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=gcp_key.json" >> $GITHUB_ENV
 
       - name: Validate Terraform configuration
         run: terraform -chdir=infra/terraform validate
