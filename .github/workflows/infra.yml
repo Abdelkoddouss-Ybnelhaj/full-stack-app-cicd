@@ -25,14 +25,14 @@ jobs:
           echo "${{ secrets.GCP_SVC_KEY }}" > gcp_key.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=gcp_key.json" >> $GITHUB_ENV
 
+      - name: Initialize Terraform
+        run: terraform -chdir=infra/terraform init
+
       - name: Validate Terraform configuration
         run: terraform -chdir=infra/terraform validate
 
       - name: Format Terraform files
         run: terraform -chdir=infra/terraform fmt -check
-
-      - name: Initialize Terraform
-        run: terraform -chdir=infra/terraform init
 
       - name: Plan Terraform Deployment
         run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
