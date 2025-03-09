@@ -21,16 +21,10 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Initialize Terraform
-        run: |
-          cd infra/terraform
-          terraform init
+        run: terraform -chdir=infra/terraform plan init
 
       - name: Plan Terraform Deployment
-        run: |
-          cd infra/terraform
-          terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
+        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
 
       - name: Apply Terraform Deployment
-        run: |
-          cd infra/terraform
-          terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
+        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
