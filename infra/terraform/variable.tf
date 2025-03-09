@@ -11,7 +11,7 @@ variable "ssh_public_key" {
   type        = string
 }
 
-variable "gcp_svc_key_path" {
-  description = "Path to Google Cloud service account key file"
+variable "gcp_svc_key" {
+  description = "Google Cloud service account key file"
   type        = string
 }
