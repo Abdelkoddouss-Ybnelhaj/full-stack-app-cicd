@@ -20,11 +20,16 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
+        run: |
+          echo "${{ secrets.GCP_SVC_KEY }}" > gcp_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=gcp_key.json" >> $GITHUB_ENV
+
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
 
       - name: Plan Terraform Deployment
-        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
+        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
+        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
