@@ -16,15 +16,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up Google Cloud service account key
-        run: |
-          echo "${{ secrets.GCP_SVC_KEY }}" > $HOME/gcp_svc_key.json
-        env:
-          GCP_SVC_KEY: ${{ secrets.GCP_SVC_KEY }}
-
-      - name: Validate Google Cloud service account key
-        run: cat $HOME/gcp_svc_key.json
           
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -37,9 +28,9 @@ jobs:
       - name: Plan Terraform Deployment
         run: |
           cd infra/terraform
-          terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key_path=$HOME/gcp_svc_key.json"
+          terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
 
       - name: Apply Terraform Deployment
         run: |
           cd infra/terraform
-          terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key_path=$HOME/gcp_svc_key.json"
+          terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" -var="gcp_svc_key=${{ secrets.GCP_SVC_KEY }}"
