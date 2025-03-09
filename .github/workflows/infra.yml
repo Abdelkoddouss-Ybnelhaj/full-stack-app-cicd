@@ -23,8 +23,7 @@ jobs:
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
           echo '${{ secrets.GCP_SVC_KEY }}' > $HOME/gcp_key.json
-          chmod 600 $HOME/gcp_key.json  # Ensure proper permissions
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_key.json" >> $GITHUB_ENV
+          chmod 666 $HOME/gcp_key.json  # Ensure proper permissions
 
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
@@ -39,14 +38,10 @@ jobs:
         run: terraform -chdir=infra/terraform fmt -check
 
       - name: Plan Terraform Deployment
-        run: terraform -chdir=infra/terraform plan \
-              -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" \
-              -var="gcp_svc_key=$(cat $HOME/gcp_key.json)"
+        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve \
-              -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}" \
-              -var="gcp_svc_key=$(cat $HOME/gcp_key.json)"
+        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
 
       - name: Cleanup Google Cloud credentials
         if: always()
