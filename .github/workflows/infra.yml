@@ -23,12 +23,15 @@ jobs:
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
           echo '${{ secrets.GCP_SVC_KEY }}' > $HOME/gcp_key.json
-          chmod 666 $HOME/gcp_key.json  # Ensure proper permissions
+          chmod 644 $HOME/gcp_key.json  # Ensure proper permissions
 
       - name: Set Public key environment variable
         run: |
           echo '${{ secrets.PUBLIC_KEY }}' > $HOME/my_google_key.pub
-          chmod 666 $HOME/my_google_key.pub  # Ensure proper permissions
+          chmod 644 $HOME/my_google_key.pub  # Ensure proper permissions
+
+      - name: Set up the private key
+        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key 
 
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
@@ -46,16 +49,16 @@ jobs:
         run: terraform -chdir=infra/terraform plan 
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve 
+        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=$(cat $HOME/my_google_key.pub)
 
       - name: Get Terraform Output (VM IP)
-        run: terraform -chdir=infra/terraform output -raw vm_ip > infra/ansible/inventory.ini
+        run: |
+          VM_IP=$(terraform -chdir=infra/terraform output -raw vm_ip)
+          echo "[web_servers]" > infra/ansible/inventory.ini
+          echo "$VM_IP ansible_user=abdelkdoussebelhaje ansible_ssh_private_key_file=$HOME/my_google_key" >> infra/ansible/inventory.ini
 
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
-
-      - name: Set up the private key
-        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key 
 
       - name: Run Ansible Playbook
         run: |
