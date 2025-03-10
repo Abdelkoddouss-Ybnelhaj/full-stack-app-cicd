@@ -28,10 +28,10 @@ jobs:
       - name: Set Public key environment variable
         run: |
           echo '${{ secrets.PUBLIC_KEY }}' > $HOME/my_google_key.pub
-          chmod 644 $HOME/my_google_key.pub  # Ensure proper permissions
+          chmod 644 $HOME/my_google_key.pub  && echo $HOME/my_google_key.pub
 
       - name: Set up the private key
-        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key  && echo $HOME
+        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key 
 
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init

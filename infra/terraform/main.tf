@@ -15,7 +15,7 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-   tags = ["http-server", "https-server"]
+  tags = ["http-server", "https-server"]
 
   network_interface {
     network = "default"
