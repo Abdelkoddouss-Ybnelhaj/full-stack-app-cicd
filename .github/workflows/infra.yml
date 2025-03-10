@@ -25,6 +25,11 @@ jobs:
           echo '${{ secrets.GCP_SVC_KEY }}' > $HOME/gcp_key.json
           chmod 666 $HOME/gcp_key.json  # Ensure proper permissions
 
+      - name: Set Public key environment variable
+        run: |
+          echo '${{ secrets.PUBLIC_KEY }}' > $HOME/my_google_key.pub
+          chmod 666 $HOME/my_google_key.pub.pub  # Ensure proper permissions
+
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
 
@@ -44,9 +49,7 @@ jobs:
         run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
 
       - name: Get Terraform Output (VM IP)
-        run: |
-          pwd
-          terraform -chdir=infra/terraform output -raw vm_ip > infra/ansible/inventory.ini
+        run: terraform -chdir=infra/terraform output -raw vm_ip > infra/ansible/inventory.ini
 
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
