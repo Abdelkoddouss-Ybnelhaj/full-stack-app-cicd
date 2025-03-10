@@ -1,6 +1,6 @@
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "my-instance"
+  name         = "my-vm-instance"
   machine_type = "e2-small"
   zone         = "${var.gcp_region}-a"
   
@@ -11,12 +11,12 @@ resource "google_compute_instance" "vm_instance" {
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "debian-cloud/debian-11" # Image family
     }
   }
 
-  tags = ["http-server", "https-server"]
-  
+   tags = ["http-server", "https-server"]
+
   network_interface {
     network = "default"
     access_config {
