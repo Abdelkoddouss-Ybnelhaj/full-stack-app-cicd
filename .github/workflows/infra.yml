@@ -31,7 +31,7 @@ jobs:
           chmod 644 $HOME/my_google_key.pub  # Ensure proper permissions
 
       - name: Set up the private key
-        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key 
+        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key  && ls
 
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
