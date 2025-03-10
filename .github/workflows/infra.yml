@@ -49,7 +49,7 @@ jobs:
         run: terraform -chdir=infra/terraform plan 
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply
+        run: terraform -chdir=infra/terraform apply -auto-approve 
 
       - name: Get Terraform Output (VM IP)
         run: |
