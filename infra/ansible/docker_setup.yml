@@ -1,5 +1,5 @@
 - name: Install Docker and Docker Compose
-  hosts: web_servers
+  hosts: web_server
   become: yes
 
   tasks:

@@ -6,7 +6,7 @@ resource "google_compute_instance" "vm_instance" {
   
   # Define the SSH public key for the VM
   metadata = {
-    ssh-keys = "abdelkdoussebelhaje:${var.ssh_public_key}"
+    ssh-keys = "abdelkdoussebelhaje:${file(var.ssh_public_key)}"
   }
 
   boot_disk {

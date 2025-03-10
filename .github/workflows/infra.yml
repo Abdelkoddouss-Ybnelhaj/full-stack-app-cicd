@@ -49,7 +49,7 @@ jobs:
         run: terraform -chdir=infra/terraform plan 
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=$(cat $HOME/my_google_key.pub)
+        run: terraform -chdir=infra/terraform apply
 
       - name: Get Terraform Output (VM IP)
         run: |
