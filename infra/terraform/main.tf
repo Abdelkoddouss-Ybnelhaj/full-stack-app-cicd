@@ -6,7 +6,7 @@ resource "google_compute_instance" "vm_instance" {
   
   # Define the SSH public key for the VM
   metadata = {
-    ssh-keys = "abdelkdoussebelhaje:${var.ssh_public_key}"
+    ssh-keys = "abdelkdoussebelhaje:${file(var.ssh_public_key)}"
   }
 
   boot_disk {
@@ -15,8 +15,8 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-   tags = ["http-server", "https-server"]
-
+  tags = ["http-server", "https-server"]
+  
   network_interface {
     network = "default"
     access_config {
