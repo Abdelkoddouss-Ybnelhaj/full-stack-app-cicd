@@ -43,10 +43,10 @@ jobs:
         run: terraform -chdir=infra/terraform fmt -check
 
       - name: Plan Terraform Deployment
-        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir=infra/terraform plan 
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir=infra/terraform apply -auto-approve 
 
       - name: Get Terraform Output (VM IP)
         run: terraform -chdir=infra/terraform output -raw vm_ip > infra/ansible/inventory.ini
