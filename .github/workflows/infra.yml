@@ -44,7 +44,9 @@ jobs:
         run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
 
       - name: Get Terraform Output (VM IP)
-        run: terraform -chdir=infra/terraform output -raw vm_ip > ~/infra/ansible/inventory.ini
+        run: |
+          pwd
+          terraform -chdir=infra/terraform output -raw vm_ip > infra/ansible/inventory.ini
 
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
@@ -54,7 +56,7 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          cd ~/infra/ansible
+          cd infra/ansible
           ansible-playbook -i inventory.ini docker_setup.yml
 
       - name: Cleanup Google Cloud credentials
