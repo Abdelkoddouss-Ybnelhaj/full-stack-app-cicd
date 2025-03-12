@@ -11,6 +11,11 @@
       ansible.builtin.copy:
         src: ../../docker-compose.prod.yml
         dest: $HOME/docker-compose.prod.yml
+    
+    - name: Copy Nginx Config file
+      ansible.builtin.copy:
+        src: ../../nginx.conf
+        dest: $HOME/nginx.conf
 
     - name: run the containers
       ansible.builtin.shell: cd $HOME && docker-compose -f docker-compose.prod.yml up -d
