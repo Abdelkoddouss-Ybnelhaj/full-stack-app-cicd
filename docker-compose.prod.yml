@@ -1,6 +1,5 @@
 name: e-wallet
 services:
-
   postgres-db:
     container_name: postgres-db
     image: postgres:14.6-alpine
