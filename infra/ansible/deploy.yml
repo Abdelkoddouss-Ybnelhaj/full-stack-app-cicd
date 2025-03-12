@@ -1,0 +1,19 @@
+- name: Deploy Full Stack App
+  hosts: web_server
+  become: yes
+
+  tasks: 
+    - name: remove existing containers
+      ansible.builtin.shell: cd $HOME && docker-compose -f docker-compose.prod.yml down -v
+      ignore_errors: yes
+
+    - name: Copy Docker Compose file
+      ansible.builtin.copy:
+        src: ../../docker-compose.prod.yml
+        dest: $HOME/docker-compose.prod.yml
+
+    - name: run the containers
+      ansible.builtin.shell: cd $HOME && docker-compose -f docker-compose.prod.yml up -d
+
+    - name: check the container status
+      ansible.builtin.shell: docker ps
