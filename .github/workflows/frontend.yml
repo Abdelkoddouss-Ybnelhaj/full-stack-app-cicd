@@ -21,9 +21,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: |
-          cd frontend
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/e-wallet:front .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/e-wallet:front e-wallet/frontend
 
       - name: Push Docker Image
         run: |
