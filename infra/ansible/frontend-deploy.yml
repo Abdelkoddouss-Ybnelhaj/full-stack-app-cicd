@@ -1,0 +1,17 @@
+- name: Deploy frontend
+  hosts: web_server
+  become: yes
+
+  tasks:
+    - name: remove existing container
+      ansible.builtin.shell: docker rm -f e-wallet-front
+      ignore_errors: yes
+
+    - name: pull the latest image
+      ansible.builtin.shell: docker pull abdo001/e-wallet:front
+    
+    - name: run the container
+      ansible.builtin.shell: cd $HOME && docker-compose -f docker-compose.prod.yml up -d
+
+    - name: check the container status
+      ansible.builtin.shell: docker ps

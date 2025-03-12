@@ -50,7 +50,7 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf 
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf # configuring a proxy server
     depends_on:
       - frontend
     networks:
