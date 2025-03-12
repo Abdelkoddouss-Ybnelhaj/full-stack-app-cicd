@@ -4,7 +4,7 @@
 
   tasks:
     - name: remove existing container
-      ansible.builtin.shell: docker rm -f e-wallet-front
+      ansible.builtin.shell: docker rm -f frontend
       ignore_errors: yes
 
     - name: pull the latest image
