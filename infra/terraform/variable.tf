@@ -7,7 +7,7 @@ variable "gcp_region" {
 }
 
 variable "ssh_public_key" {
-  description = "Public SSH key for authentication"
+  description = "Path for Public SSH key for authentication"
   type        = string
 }
 

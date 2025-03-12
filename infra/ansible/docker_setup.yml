@@ -1,0 +1,42 @@
+- name: Install Docker and Docker Compose
+  hosts: web_server
+  become: yes
+
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: ["apt-transport-https", "ca-certificates", "curl", "software-properties-common"]
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG Key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker Repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian bionic stable
+        state: present
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: ["docker-ce", "docker-ce-cli", "containerd.io","docker-buildx-plugin","docker-compose-plugin"] 
+        state: present
+        update_cache: yes
+      
+    - name: Start Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+
+    - name: Add User to Docker group
+      ansible.builtin.user:
+        name: "abdelkodoussebelhaje"
+        groups: docker
+        append: yes
+
+    - name: Copy Docker Compose file
+      ansible.builtin.copy:
+        src: ../../docker-compose.prod.yml
+        dest: $HOME/docker-compose.prod.yml

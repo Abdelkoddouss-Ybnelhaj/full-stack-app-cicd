@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Infra'
 
 on:
   pull_request:
@@ -23,7 +23,15 @@ jobs:
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: |
           echo '${{ secrets.GCP_SVC_KEY }}' > $HOME/gcp_key.json
-          chmod 666 $HOME/gcp_key.json  # Ensure proper permissions
+          chmod 644 $HOME/gcp_key.json  # Ensure proper permissions
+
+      - name: Set Public key environment variable
+        run: |
+          echo '${{ secrets.PUBLIC_KEY }}' > $HOME/my_google_key.pub
+          chmod 644 $HOME/my_google_key.pub  && echo $HOME/my_google_key.pub
+
+      - name: Set up the private key
+        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/my_google_key && chmod 600 $HOME/my_google_key 
 
       - name: Initialize Terraform
         run: terraform -chdir=infra/terraform init
@@ -38,10 +46,24 @@ jobs:
         run: terraform -chdir=infra/terraform fmt -check
 
       - name: Plan Terraform Deployment
-        run: terraform -chdir=infra/terraform plan -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir=infra/terraform plan 
 
       - name: Apply Terraform Deployment
-        run: terraform -chdir=infra/terraform apply -auto-approve -var="ssh_public_key=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir=infra/terraform apply -auto-approve 
+
+      - name: Get Terraform Output (VM IP)
+        run: |
+          VM_IP=$(terraform -chdir=infra/terraform output -raw vm_ip)
+          echo "[web_servers]" > infra/ansible/inventory.ini
+          echo "$VM_IP ansible_user=abdelkdoussebelhaje ansible_ssh_private_key_file=$HOME/my_google_key" >> infra/ansible/inventory.ini
+
+      - name: Install Ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: Run Ansible Playbook
+        run: |
+          cd infra/ansible
+          ansible-playbook -i inventory.ini docker_setup.yml
 
       - name: Cleanup Google Cloud credentials
         if: always()
