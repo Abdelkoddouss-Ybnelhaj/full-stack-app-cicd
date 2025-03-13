@@ -6,11 +6,10 @@ on:
     paths: 
       - "e-wallet/frontend/**"
 
-jobs:      
+jobs:
+      
   deploy:
     runs-on: ubuntu-latest
-
-    needs: build
 
     steps:
       - name: Checkout Repository
