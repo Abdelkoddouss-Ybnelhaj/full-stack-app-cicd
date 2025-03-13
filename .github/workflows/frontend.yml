@@ -6,29 +6,7 @@ on:
     paths: 
       - "e-wallet/frontend/**"
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build Docker Image
-        run: |
-          cd frontend
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/e-wallet:front .
-
-      - name: Push Docker Image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/e-wallet:front
-      
+jobs:      
   deploy:
     runs-on: ubuntu-latest
 
@@ -39,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up the private key
-        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/google_key && chmod 644 $HOME/google_key 
+        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/google_key && chmod 600 $HOME/google_key 
         
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
