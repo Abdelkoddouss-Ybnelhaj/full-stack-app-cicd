@@ -48,4 +48,4 @@ volumes:
 
 networks:
   ewallet_network:
-    driver: bridge
+    driver: bridge # type of network
