@@ -1,0 +1,48 @@
+name: Backend CI-CD pipeline
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    paths: 
+      - "e-wallet/backend/**"
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/e-wallet:back e-wallet/backend
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/e-wallet:back
+      
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up the private key
+        run: echo "${{ secrets.PRIVATE_KEY }}" > $HOME/google_key && chmod 600 $HOME/google_key 
+        
+      - name: Install Ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: Run Ansible Playbook
+        run: |
+          cd infra/ansible
+          ansible-playbook -i inventory.ini backend-deploy.yml
