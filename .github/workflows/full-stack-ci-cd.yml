@@ -48,4 +48,4 @@ jobs:
       - name: Run Ansible Playbook
         run: |
           cd infra/ansible
-          ansible-playbook -i inventory.ini docker_setup.yml
+          ansible-playbook -i inventory.ini deploy.yml
