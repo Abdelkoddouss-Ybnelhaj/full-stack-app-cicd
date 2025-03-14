@@ -3,6 +3,14 @@
   become: yes
 
   tasks: 
+    - name: Install Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Install CertBot
+      ansible.builtin.shell: sudo apt-get install certbot python3-certbot-nginx -y
+
     - name: remove existing containers
       ansible.builtin.shell: cd $HOME && docker-compose -f docker-compose.prod.yml down -v
       ignore_errors: yes
