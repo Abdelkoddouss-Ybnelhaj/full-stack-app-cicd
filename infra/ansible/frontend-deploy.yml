@@ -7,6 +7,10 @@
       ansible.builtin.shell: docker rm -f frontend
       ignore_errors: yes
 
+    - name: remove existing image
+      ansible.builtin.shell: docker rmi -f abdo001/e-wallet:front
+      ignore_errors: yes
+
     - name: pull the latest image
       ansible.builtin.shell: docker pull abdo001/e-wallet:front
     
